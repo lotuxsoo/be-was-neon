@@ -25,6 +25,7 @@ public class WebServer {
             // 클라이언트가 연결될때까지 대기한다.
             Socket connection;
             while ((connection = listenSocket.accept()) != null) {
+                // 객체를 생성하기 때문에 새로운 쓰레드를 요청 마다 생성 (멀티 스레드)
                 Thread thread = new Thread(new RequestHandler(connection));
                 thread.start();
             }
