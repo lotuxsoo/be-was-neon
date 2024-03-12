@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.StringTokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.StringUtils;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -37,10 +38,7 @@ public class RequestHandler implements Runnable {
             String requestHeader = br.readLine();
             logger.debug("requestHeader = {}", requestHeader);
 
-            // 요청 라인을 분리하여 파싱
-            StringTokenizer tokenizer = new StringTokenizer(requestHeader);
-            tokenizer.nextToken(); // "GET" 읽기
-            String requestedFile = tokenizer.nextToken(); // 요청한 파일명 가져오기
+            String requestedFile = StringUtils.getUrl(requestHeader);
             String filePath = DEFAULT_PATH + requestedFile;
 
             // 파일 내용을 읽어들임
