@@ -1,10 +1,8 @@
 package webserver;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,7 +10,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import java.nio.charset.StandardCharsets;
-import java.util.StringTokenizer;
+import java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.StringUtils;
@@ -45,7 +43,7 @@ public class RequestHandler implements Runnable {
             File file = new File(filePath);
             byte[] body;
             if (file.exists()) {
-                body = readFileContent(file);
+                body = Files.readAllBytes(file.toPath());
                 logger.debug("File {} found.", filePath);
             } else {
                 // 파일이 존재하지 않을 경우 404 에러 응답
@@ -61,19 +59,6 @@ public class RequestHandler implements Runnable {
             logger.error(e.getMessage());
         }
     }
-
-    private byte[] readFileContent(File file) throws IOException {
-        try (FileInputStream fis = new FileInputStream(file)) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = fis.read(buffer)) != -1) {
-                bos.write(buffer, 0, bytesRead);
-            }
-            return bos.toByteArray();
-        }
-    }
-
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
         try {
