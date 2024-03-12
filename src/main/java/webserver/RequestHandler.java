@@ -31,9 +31,7 @@ public class RequestHandler implements Runnable {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             String requestHeader = br.readLine();   // GET /index.html HTTP/1.1
-            if (requestHeader == null) {
-                return;
-            }
+
             String file = requestHeader.split(" ")[1];   // /index.html
             byte[] body = Files.readAllBytes(new File("src/main/resources/static" + file).toPath());
 
