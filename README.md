@@ -4,6 +4,10 @@
 ## 웹서버 1단계 - index.html 응답
 ### 정적인 html 파일 응답
 - InputStreamReader, BufferedReader의 readLine()을 통해서 Request Header를 한줄씩 읽어온다.
+- 한줄씩 읽어온 Request Header를 logger.debug를 이용하여 출력한다.
+- StringTokenizer를 이용하여 토큰을 분리하고 /index.html을 가져온다.
+- 파일이 존재하면 byte[]에 파일을 읽어오고, 없으면 에러를 출력한다.
+- DataOutputStream을 통해 클라이언트에 응답을 전송한다.
 
 ### Concurrent 패키지 사용
 - 요청이 들어올 때마다 새로운 스레드를 생성하는 것보다 스레드 풀을 사용하여 스레드를 재사용하는 것이 효율적이다.
