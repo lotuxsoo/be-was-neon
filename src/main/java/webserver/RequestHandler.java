@@ -38,6 +38,9 @@ public class RequestHandler implements Runnable {
             logger.debug("requestHeader = {}", requestHeader);
 
             String requestedFile = StringUtils.getUrl(requestHeader);
+            if (!requestedFile.endsWith(".html")) {
+                requestedFile += "/index.html";
+            }
             String filePath = DEFAULT_PATH + requestedFile;
 
             // 파일 내용을 읽어들임

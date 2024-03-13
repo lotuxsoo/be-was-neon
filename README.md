@@ -43,12 +43,20 @@
 - 에러와 예외 정보를 기록하고 처리할 때 사용된다.
 - 프로그램이 비정상적인 상황에 진입했을 때 사용된다.
 
-### Request Header
+## 웹서버 2단계 - GET으로 회원가입
 
 - HTTP 메시지 시작 줄과 HTTP 헤더를 묶어서 '요청 헤드'라고 부른다.
 - 시작 줄에는 **HTTP 메서드(GET, POST, PUT, DELETE)**와 **요청 타겟(URL)**, 응답 메시지에서 써야 할 **HTTP 버전**으로 이루어져 있다.
 
-### Request Parameter 추출하기
+### Request Header
+- HTTP 메시지 시작 줄과 HTTP 헤더를 묶어서 요청 헤더라고 부른다.
+- 시작 줄은 **HTTP 메서드(GET, POST, PUT, DELETE)**와 **요청 타겟(URL)**, 응답 메시지에서 써야 할 **HTTP 버전**으로 이루어져 있다.
 
+### Request Parameter 추출하기
 - Header의 첫 번째 라인에서 요청 URL을 추출하기
 - 요청 URL에서 접근 경로와 이름=값을 추출해 User 클래스에 담기
+
+### HTTP GET 프로토콜
+- 서버로부터 데이터를 받아올때 사용
+- 전달되는 파라미터가 url 경로상에 보임
+- URL 뒤에 ?와 함께 데이터를 연결하여 전송함
