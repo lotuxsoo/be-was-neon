@@ -42,19 +42,18 @@ public class RequestHandler implements Runnable {
 
             if (requestUrl.contains("?")) {
                 String[] tokens = StringUtils.getTokens(requestUrl, "\\?");
-                // split[1] -> userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net
+                // userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net
                 String queryParams = tokens[1];
                 String[] params = StringUtils.getTokens(queryParams, "&");
                 String[] tempdb = new String[params.length];
                 for (int i = 0; i < params.length; i++) {
-                    String[] param = StringUtils.getTokens(params[i], "="); // param[1]이 User객체의 정보
-                    tempdb[i] = param[1];
+                    String[] param = StringUtils.getTokens(params[i], "=");
+                    tempdb[i] = param[1]; // param[1]이 User 객체의 정보
                 }
-                User user = new User(tempdb[0], tempdb[1], tempdb[2]);
+                User user = new User(tempdb[0], tempdb[1], tempdb[2]); // id, nickname, password 저장
                 Database.addUser(user);
                 User userById = Database.findUserById(tempdb[0]);
                 logger.debug("User: " + user.getName());
-
             } else if (!requestUrl.endsWith(".html")) {
                 requestUrl += "/index.html";
             }
