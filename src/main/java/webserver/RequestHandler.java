@@ -1,5 +1,6 @@
 package webserver;
 
+import db.Database;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -12,6 +13,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import java.nio.charset.StandardCharsets;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.StringUtils;
@@ -36,13 +38,28 @@ public class RequestHandler implements Runnable {
             // 요청 헤더를 한 줄씩 읽어옴
             String requestHeader = br.readLine();
             logger.debug("requestHeader = {}", requestHeader);
+            String requestUrl = StringUtils.getUrl(requestHeader); // 요청 url (2번째 토큰)
 
-            String requestedFile = StringUtils.getUrl(requestHeader);
-            if (!requestedFile.endsWith(".html")) {
-                requestedFile += "/index.html";
+            if (requestUrl.contains("?")) {
+                String[] tokens = StringUtils.getTokens(requestUrl, "\\?");
+                // split[1] -> userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net
+                String queryParams = tokens[1];
+                String[] params = StringUtils.getTokens(queryParams, "&");
+                String[] tempdb = new String[params.length];
+                for (int i = 0; i < params.length; i++) {
+                    String[] param = StringUtils.getTokens(params[i], "="); // param[1]이 User객체의 정보
+                    tempdb[i] = param[1];
+                }
+                User user = new User(tempdb[0], tempdb[1], tempdb[2]);
+                Database.addUser(user);
+                User userById = Database.findUserById(tempdb[0]);
+                logger.debug("User: " + user.getName());
+
+            } else if (!requestUrl.endsWith(".html")) {
+                requestUrl += "/index.html";
             }
 
-            String filePath = DEFAULT_PATH + requestedFile;
+            String filePath = DEFAULT_PATH + requestUrl;
 
             // 파일 내용을 읽어들임
             File file = new File(filePath);

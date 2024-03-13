@@ -8,4 +8,10 @@ public class StringUtils {
         }
         return tokens[1];
     }
+
+    public static String[] getTokens(String str, String separator) {
+        String[] tokens = str.split(separator);
+        return tokens;
+    }
+
 }
