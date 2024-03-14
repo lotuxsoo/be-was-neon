@@ -1,5 +1,6 @@
 package webserver;
 
+import http.HttpRequest;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -33,21 +34,21 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+
             // 요청 헤더를 한 줄씩 읽어옴
             String requestHeader = br.readLine();
             logger.debug("requestHeader = {}", requestHeader);
             HttpRequest request = new HttpRequest(requestHeader);
             String path = request.getPath();
 
-
             if (path.contains("/create")) {
                 User user = request.createUser();
                 logger.debug("User: " + user);
-            } else if (!path.endsWith(".html")) { // file.isDirectory()
+            } else if (!path.endsWith(".html")) {
                 path += INDEX_FILE;
             }
-
             String filePath = DEFAULT_PATH + path;
+
             // 파일 내용을 읽어들임
             File file = new File(filePath);
             byte[] body;
