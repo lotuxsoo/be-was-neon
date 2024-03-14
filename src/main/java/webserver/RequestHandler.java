@@ -38,10 +38,12 @@ public class RequestHandler implements Runnable {
             logger.debug("requestHeader = {}", requestHeader);
             HttpRequest request = new HttpRequest(requestHeader);
             String path = request.getPath();
+
+
             if (path.contains("/create")) {
                 User user = request.createUser();
                 logger.debug("User: " + user);
-            } else if (!path.endsWith(".html")) {
+            } else if (!path.endsWith(".html")) { // file.isDirectory()
                 path += INDEX_FILE;
             }
 

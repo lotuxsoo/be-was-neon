@@ -21,13 +21,13 @@ public class HttpRequest {
     public User createUser() {
         String queryParameter = getTokens(path, "\\?")[1];
         String[] params = getTokens(queryParameter, "&");
-
         for (int i = 0; i < params.length; i++) {
             String[] tokens = getTokens(params[i], "=");
             queryMap.put(tokens[0], tokens[1]);
         }
 
-        User user = new User(queryMap.get("userId"), queryMap.get("name"), queryMap.get("password"));
+        User user = new User(queryMap.get("userId"), queryMap.get("password"), queryMap.get("name"),
+                queryMap.get("email"));
         Database.addUser(user);
         return Database.findUserById(user.getUserId());
     }
