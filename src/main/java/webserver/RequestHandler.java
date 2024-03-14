@@ -1,6 +1,8 @@
 package webserver;
 
+import http.HttpMethod;
 import http.HttpRequest;
+import http.HttpStatus;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -44,6 +46,8 @@ public class RequestHandler implements Runnable {
             if (path.contains("/create")) {
                 User user = request.createUser();
                 logger.debug("User: " + user);
+                redirectToIndexPage(out); // 회원가입 후 index.html 페이지로 리다이렉트
+               // return; // 리다이렉트 후 작업 종료
             } else if (!path.endsWith(".html")) {
                 path += INDEX_FILE;
             }
@@ -52,21 +56,35 @@ public class RequestHandler implements Runnable {
             // 파일 내용을 읽어들임
             File file = new File(filePath);
             byte[] body;
+            HttpStatus httpStatus;
+
             if (file.exists()) {
                 body = readFileContent(file);
-                logger.debug("File {} found.", filePath);
+                httpStatus = HttpStatus.OK;
             } else {
                 // 파일이 존재하지 않을 경우 404 에러 응답
-                body = "File Not Found".getBytes(StandardCharsets.UTF_8);
-                logger.debug("File {} not found.", filePath);
+                body = HttpStatus.NOT_FOUND.getMessage().getBytes(StandardCharsets.UTF_8);
+                httpStatus = HttpStatus.NOT_FOUND;
             }
-
+            logger.debug(httpStatus.getMessage(), filePath);
             // 클라이언트에게 응답을 전송
             DataOutputStream dos = new DataOutputStream(out);
-            response200Header(dos, body.length);
+            responseHeader(dos, body.length, httpStatus);
             responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
+        }
+    }
+
+    private void redirectToIndexPage(OutputStream out) {
+        try {
+            String response = "HTTP/1.1 302 Found\r\n" +
+                    "Location: " + INDEX_FILE + "\r\n" +
+                    "\r\n";
+            out.write(response.getBytes(StandardCharsets.UTF_8));
+            out.flush();
+        } catch (IOException e) {
+            logger.error("Error while redirecting: {}", e.getMessage());
         }
     }
 
@@ -82,10 +100,9 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
+    private void responseHeader(DataOutputStream dos, int lengthOfBodyContent, HttpStatus httpStatus) {
         try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            //contentType:text/html; / characterEncoding:charset=utf-8
+            dos.writeBytes("HTTP/1.1" + " " + httpStatus.getCode() + " " + httpStatus.getMessage() + "\r\n");
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
