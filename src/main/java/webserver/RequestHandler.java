@@ -35,32 +35,19 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-
             // 요청 헤더를 한 줄씩 읽어옴
             String requestHeader = br.readLine();
             logger.debug("requestHeader = {}", requestHeader);
-            String requestUrl = StringUtils.getUrl(requestHeader); // 요청 url (2번째 토큰)
-
-            if (requestUrl.contains("/create")) {
-                String[] tokens = StringUtils.getTokens(requestUrl, "\\?");
-                // userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net
-                String queryParams = tokens[1];
-                String[] params = StringUtils.getTokens(queryParams, "&");
-                String[] tempdb = new String[params.length];
-                for (int i = 0; i < params.length; i++) {
-                    String[] param = StringUtils.getTokens(params[i], "=");
-                    tempdb[i] = param[1]; // param[1]이 User 객체의 정보
-                }
-                User user = new User(tempdb[0], tempdb[1], tempdb[2]); // id, nickname, password 저장
-                Database.addUser(user);
-                User userById = Database.findUserById(tempdb[0]);
-                logger.debug("User: " + userById);
-            } else if (!requestUrl.endsWith(".html")) {
-                requestUrl += INDEX_FILE;
+            HttpRequest request = new HttpRequest(requestHeader);
+            String path = request.getPath();
+            if (path.contains("/create")) {
+                User user = request.createUser();
+                logger.debug("User: " + user);
+            } else if (!path.endsWith(".html")) {
+                path += INDEX_FILE;
             }
 
-            String filePath = DEFAULT_PATH + requestUrl;
-
+            String filePath = DEFAULT_PATH + path;
             // 파일 내용을 읽어들임
             File file = new File(filePath);
             byte[] body;
