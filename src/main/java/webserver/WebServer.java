@@ -16,7 +16,7 @@ public class WebServer {
         int port = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;
 
         // ExecutorService를 사용하여 스레드 풀을 생성한다.
-        ExecutorService threadPool = Executors.newFixedThreadPool(100); // 최대 스레드 수:100
+        ExecutorService executorService = Executors.newFixedThreadPool(100); // 최대 스레드 수:100
 
         // 서버소켓을 생성한다. 웹서버는 기본적으로 8080번 포트를 사용한다.
         try (ServerSocket listenSocket = new ServerSocket(port)) {
@@ -26,11 +26,11 @@ public class WebServer {
             Socket connection;
             while ((connection = listenSocket.accept()) != null) {
                 // 요청 처리를 담당할 Runnable 객체를 생성하여 스레드 풀에 제출한다.
-                threadPool.execute(new RequestHandler(connection));
+                executorService.execute(new RequestHandler(connection));
             }
         } finally {
             // 프로그램 종료 시 스레드 풀을 종료한다.
-            threadPool.shutdown();
+            executorService.shutdown();
         }
     }
 }

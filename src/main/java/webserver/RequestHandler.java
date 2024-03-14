@@ -21,7 +21,8 @@ import utils.StringUtils;
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static final String DEFAULT_PATH = "./src/main/resources/static";
-    private Socket connection;
+    private static final String INDEX_FILE = "/index.html";
+    private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
@@ -40,7 +41,7 @@ public class RequestHandler implements Runnable {
             logger.debug("requestHeader = {}", requestHeader);
             String requestUrl = StringUtils.getUrl(requestHeader); // 요청 url (2번째 토큰)
 
-            if (requestUrl.contains("?")) {
+            if (requestUrl.contains("/create")) {
                 String[] tokens = StringUtils.getTokens(requestUrl, "\\?");
                 // userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net
                 String queryParams = tokens[1];
@@ -53,9 +54,9 @@ public class RequestHandler implements Runnable {
                 User user = new User(tempdb[0], tempdb[1], tempdb[2]); // id, nickname, password 저장
                 Database.addUser(user);
                 User userById = Database.findUserById(tempdb[0]);
-                logger.debug("User: " + user.getName());
+                logger.debug("User: " + userById);
             } else if (!requestUrl.endsWith(".html")) {
-                requestUrl += "/index.html";
+                requestUrl += INDEX_FILE;
             }
 
             String filePath = DEFAULT_PATH + requestUrl;
@@ -96,6 +97,7 @@ public class RequestHandler implements Runnable {
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
+            //contentType:text/html; / characterEncoding:charset=utf-8
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
