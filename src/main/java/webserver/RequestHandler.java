@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RequestHandler implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String DEFAULT_PATH = "./src/main/resources/static/";
     private static final String INDEX_FILE = "index.html";
     private final Socket connection;

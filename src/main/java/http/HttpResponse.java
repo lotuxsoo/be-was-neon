@@ -4,10 +4,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.RequestHandler;
 
 public class HttpResponse {
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public void responseHeader(DataOutputStream dos, int lengthOfBodyContent, HttpStatus httpStatus,
                                String contentType) {
