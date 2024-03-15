@@ -1,6 +1,9 @@
 package http;
 
 import db.Database;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import model.User;
@@ -11,10 +14,10 @@ public class HttpRequest {
     private String version;
     private Map<String, String> queryMap = new HashMap<String, String>();
 
-    public HttpRequest(String requestLine) {
+    public HttpRequest(String requestLine) throws UnsupportedEncodingException {
         String[] split = requestLine.split(" ");
         this.method = split[0];
-        this.path = split[1];
+        this.path = URLDecoder.decode(split[1], StandardCharsets.UTF_8);
         this.version = split[2];
     }
 
