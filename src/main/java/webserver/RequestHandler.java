@@ -1,7 +1,6 @@
 package webserver;
 
 import http.ContentType;
-import http.HttpMethod;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
@@ -17,15 +16,14 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-    private static final String DEFAULT_PATH = "./src/main/resources/static";
-    private static final String INDEX_FILE = "/index.html";
+    private static final String DEFAULT_PATH = "./src/main/resources/static/";
+    private static final String INDEX_FILE = "index.html";
     private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
@@ -47,20 +45,22 @@ public class RequestHandler implements Runnable {
             String path = request.getPath();
 
             ContentType[] values = ContentType.values();
+            String contentType = "text/html";
 
             if (path.contains("/create")) {
                 User user = request.createUser();
                 logger.debug("User: " + user);
                 redirectToIndexPage(out); // 회원가입 후 index.html 페이지로 리다이렉트
                 return;
-            } else if (!path.endsWith(".html")) {
-                path += INDEX_FILE;
             } else {
-                String s = path.split(".")[1];
-                if (Arrays.stream(values).anyMatch(value -> value.getName().equals(s))) {
-
+                String s = path.split("\\.")[1];
+                for (ContentType type : values) {
+                    if (type.getName().equals(s)) {
+                        contentType = type.getContentType();
+                    }
                 }
             }
+
             String filePath = DEFAULT_PATH + path;
 
             // 파일 내용을 읽어들임
@@ -80,7 +80,7 @@ public class RequestHandler implements Runnable {
             // 클라이언트에게 응답을 전송
             DataOutputStream dos = new DataOutputStream(out);
             HttpResponse httpResponse = new HttpResponse();
-            httpResponse.responseHeader(dos, body.length, httpStatus);
+            httpResponse.responseHeader(dos, body.length, httpStatus, contentType);
             httpResponse.responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());

@@ -56,4 +56,3 @@
 
 - 서버가 응답 헤더의 Content-Type을 올바르게 지정해야 클라이언트가 알맞게 처리할 수 있다.
 - 지정할 Content-Type: html,css,js,ico,png,jpg,svg
-
