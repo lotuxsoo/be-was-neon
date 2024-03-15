@@ -12,14 +12,15 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import java.nio.charset.StandardCharsets;
-import java.util.StringTokenizer;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static final String DEFAULT_PATH = "./src/main/resources/static";
-    private Socket connection;
+    private static final String INDEX_FILE = "/index.html";
+    private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
@@ -32,17 +33,19 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-
             // 요청 헤더를 한 줄씩 읽어옴
             String requestHeader = br.readLine();
             logger.debug("requestHeader = {}", requestHeader);
+            HttpRequest request = new HttpRequest(requestHeader);
+            String path = request.getPath();
+            if (path.contains("/create")) {
+                User user = request.createUser();
+                logger.debug("User: " + user);
+            } else if (!path.endsWith(".html")) {
+                path += INDEX_FILE;
+            }
 
-            // 요청 라인을 분리하여 파싱
-            StringTokenizer tokenizer = new StringTokenizer(requestHeader);
-            tokenizer.nextToken(); // "GET" 읽기
-            String requestedFile = tokenizer.nextToken(); // 요청한 파일명 가져오기
-            String filePath = DEFAULT_PATH + requestedFile;
-
+            String filePath = DEFAULT_PATH + path;
             // 파일 내용을 읽어들임
             File file = new File(filePath);
             byte[] body;
@@ -76,10 +79,10 @@ public class RequestHandler implements Runnable {
         }
     }
 
-
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
+            //contentType:text/html; / characterEncoding:charset=utf-8
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
