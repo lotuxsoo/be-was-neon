@@ -1,7 +1,9 @@
 package webserver;
 
+import http.ContentType;
 import http.HttpMethod;
 import http.HttpRequest;
+import http.HttpResponse;
 import http.HttpStatus;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -15,6 +17,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,13 +46,20 @@ public class RequestHandler implements Runnable {
             HttpRequest request = new HttpRequest(requestHeader);
             String path = request.getPath();
 
+            ContentType[] values = ContentType.values();
+
             if (path.contains("/create")) {
                 User user = request.createUser();
                 logger.debug("User: " + user);
                 redirectToIndexPage(out); // 회원가입 후 index.html 페이지로 리다이렉트
-               // return; // 리다이렉트 후 작업 종료
+                return;
             } else if (!path.endsWith(".html")) {
                 path += INDEX_FILE;
+            } else {
+                String s = path.split(".")[1];
+                if (Arrays.stream(values).anyMatch(value -> value.getName().equals(s))) {
+
+                }
             }
             String filePath = DEFAULT_PATH + path;
 
@@ -62,15 +72,16 @@ public class RequestHandler implements Runnable {
                 body = readFileContent(file);
                 httpStatus = HttpStatus.OK;
             } else {
-                // 파일이 존재하지 않을 경우 404 에러 응답
                 body = HttpStatus.NOT_FOUND.getMessage().getBytes(StandardCharsets.UTF_8);
                 httpStatus = HttpStatus.NOT_FOUND;
             }
+
             logger.debug(httpStatus.getMessage(), filePath);
             // 클라이언트에게 응답을 전송
             DataOutputStream dos = new DataOutputStream(out);
-            responseHeader(dos, body.length, httpStatus);
-            responseBody(dos, body);
+            HttpResponse httpResponse = new HttpResponse();
+            httpResponse.responseHeader(dos, body.length, httpStatus);
+            httpResponse.responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
@@ -78,7 +89,7 @@ public class RequestHandler implements Runnable {
 
     private void redirectToIndexPage(OutputStream out) {
         try {
-            String response = "HTTP/1.1 302 Found\r\n" +
+            String response = "HTTP/1.1 307 Temporary Redirect\r\n" +
                     "Location: " + INDEX_FILE + "\r\n" +
                     "\r\n";
             out.write(response.getBytes(StandardCharsets.UTF_8));
@@ -100,23 +111,4 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private void responseHeader(DataOutputStream dos, int lengthOfBodyContent, HttpStatus httpStatus) {
-        try {
-            dos.writeBytes("HTTP/1.1" + " " + httpStatus.getCode() + " " + httpStatus.getMessage() + "\r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
 }
