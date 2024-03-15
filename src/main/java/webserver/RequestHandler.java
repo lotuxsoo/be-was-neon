@@ -49,13 +49,13 @@ public class RequestHandler implements Runnable {
 
             if (path.contains("/create")) {
                 User user = request.createUser();
-                logger.debug("User: " + user);
-                redirectToIndexPage(out); // 회원가입 후 index.html 페이지로 리다이렉트
+                logger.debug(user.toString());
+                redirectToIndexPage(out); // index.html 페이지로 리다이렉트
                 return;
             } else {
-                String s = path.split("\\.")[1];
+                String ext = path.split("\\.")[1];
                 for (ContentType type : values) {
-                    if (type.getName().equals(s)) {
+                    if (type.getName().equals(ext)) {
                         contentType = type.getContentType();
                     }
                 }
@@ -92,6 +92,7 @@ public class RequestHandler implements Runnable {
             String response = "HTTP/1.1 307 Temporary Redirect\r\n" +
                     "Location: " + INDEX_FILE + "\r\n" +
                     "\r\n";
+
             out.write(response.getBytes(StandardCharsets.UTF_8));
             out.flush();
         } catch (IOException e) {
