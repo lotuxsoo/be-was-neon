@@ -1,5 +1,7 @@
 package http;
 
+import static utils.StringUtil.getTokens;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,10 +29,6 @@ public class HttpRequest {
         for (String request : requests) {
             logger.debug(request);
         }
-    }
-
-    public String[] getTokens(String str, String separator) {
-        return str.split(separator);
     }
 
     public String getUri() {

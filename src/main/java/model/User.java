@@ -1,5 +1,7 @@
 package model;
 
+import static utils.StringUtil.getTokens;
+
 import db.Database;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,10 +33,6 @@ public class User {
                 map.get("email"));
         Database.addUser(user);
         return Database.findUserById(user.getUserId());
-    }
-
-    public static String[] getTokens(String str, String separator) {
-        return str.split(separator);
     }
 
     public String getUserId() {
