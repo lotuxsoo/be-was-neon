@@ -4,14 +4,12 @@ import http.ContentType;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 
@@ -36,19 +34,14 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
-            BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-
-            // 요청 헤더를 한 줄씩 읽어옴
-            String requestHeader = br.readLine();
-            logger.debug("requestHeader = {}", requestHeader);
-            HttpRequest request = new HttpRequest(requestHeader);
-            String path = request.getPath();
+            HttpRequest httpRequest = new HttpRequest(in);
+            String path = httpRequest.getPath();
 
             ContentType[] values = ContentType.values();
             String contentType = "text/html";
 
             if (path.contains("/create")) {
-                User user = request.createUser();
+                User user = httpRequest.createUser();
                 logger.debug(user.toString());
                 redirectToIndexPage(out); // index.html 페이지로 리다이렉트
                 return;
@@ -69,14 +62,14 @@ public class RequestHandler implements Runnable {
             HttpStatus httpStatus;
 
             if (file.exists()) {
-                body = readFileContent(file);
                 httpStatus = HttpStatus.OK;
+                body = readFileContent(file);
             } else {
-                body = HttpStatus.NOT_FOUND.getMessage().getBytes(StandardCharsets.UTF_8);
                 httpStatus = HttpStatus.NOT_FOUND;
+                body = httpStatus.getMessage().getBytes(StandardCharsets.UTF_8);
             }
-
             logger.debug(httpStatus.getMessage(), filePath);
+
             // 클라이언트에게 응답을 전송
             DataOutputStream dos = new DataOutputStream(out);
             HttpResponse httpResponse = new HttpResponse();
