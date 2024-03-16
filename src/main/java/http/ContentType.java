@@ -21,5 +21,4 @@ public enum ContentType {
     public String getContentType() {
         return contentType;
     }
-
 }

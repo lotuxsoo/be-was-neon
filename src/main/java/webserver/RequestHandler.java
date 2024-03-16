@@ -35,18 +35,19 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             HttpRequest httpRequest = new HttpRequest(in);
-            String path = httpRequest.getPath();
+            String uri = httpRequest.getUri();
 
             ContentType[] values = ContentType.values();
             String contentType = "text/html";
 
-            if (path.contains("/create")) {
-                User user = httpRequest.createUser();
+            if (uri.contains("/create")) {
+                String queryParameter = uri.split("\\?")[1];
+                User user = User.from(queryParameter);
                 logger.debug(user.toString());
                 redirectToIndexPage(out); // index.html 페이지로 리다이렉트
                 return;
             } else {
-                String ext = path.split("\\.")[1];
+                String ext = uri.split("\\.")[1];
                 for (ContentType type : values) {
                     if (type.getName().equals(ext)) {
                         contentType = type.getContentType();
@@ -54,7 +55,7 @@ public class RequestHandler implements Runnable {
                 }
             }
 
-            String filePath = DEFAULT_PATH + path;
+            String filePath = DEFAULT_PATH + uri;
 
             // 파일 내용을 읽어들임
             File file = new File(filePath);
