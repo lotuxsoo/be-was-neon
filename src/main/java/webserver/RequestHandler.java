@@ -41,11 +41,11 @@ public class RequestHandler implements Runnable {
             String contentType = "text/html";
 
             if (uri.contains("/create")) {
-                String queryParameter = uri.split("\\?")[1];
-                User user = User.from(queryParameter);
-                logger.debug(user.toString());
-                redirectToIndexPage(out); // index.html 페이지로 리다이렉트
-                return;
+//                String queryParameter = uri.split("\\?")[1];
+//                User user = User.from(queryParameter);
+//                logger.debug(user.toString());
+//                redirectToIndexPage(out); // index.html 페이지로 리다이렉트
+//                return;
             } else {
                 String ext = uri.split("\\.")[1];
                 for (ContentType type : values) {
