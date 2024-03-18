@@ -23,14 +23,36 @@
 ## 웹서버 2단계 - GET으로 회원가입
 
 ### Request Header
+
 - HTTP 메시지 시작 줄과 HTTP 헤더를 묶어서 요청 헤더라고 부른다.
 - 시작 줄은 **HTTP 메서드(GET, POST, PUT, DELETE)**와 **요청 타겟(URL)**, 응답 메시지에서 써야 할 **HTTP 버전**으로 이루어져 있다.
 
 ### Request Parameter 추출하기
+
 - Header의 첫 번째 라인에서 요청 URL을 추출하기
 - 요청 URL에서 접근 경로와 이름=값을 추출해 User 클래스에 담기
 
 ### HTTP GET 프로토콜
+
 - 서버로부터 데이터를 받아올때 사용
 - 전달되는 파라미터가 url 경로상에 보임
 - URL 뒤에 ?와 함께 데이터를 연결하여 전송함
+
+### HTTP Status
+
+- 200 OK: 요청이 성공적으로 되었습니다.
+- 404 NOT FOUND: 서버는 요청받은 리소스를 찾을 수 없습니다. 브라우저에서는 알려지지 않은 URL을 의미합니다.
+- 301 Moved Permanently (또는 308 Permanent Redirect): 리소스의 위치가 영구적으로 변경되었을 때 사용됩니다.
+- 302 Found (또는 307 Temporary Redirect): 리소스의 위치가 일시적으로 변경되었을 때 사용됩니다.
+- HTTP 응답 헤더에 Location 헤더의 값을 통해 클라이언트가 이동해야할 위치를 나타낸다.
+
+## 웹 서버 3단계 - 다양한 컨텐츠 타입 지원
+
+### HTTP Response
+
+- 서버가 클라이언트에 HTTP 응답을 보낼 때 헤더와 바디에 각각 다른 내용을 담아서 클라이언트가 정보를 처리한다.
+
+### Content Type
+
+- 서버가 응답 헤더의 Content-Type을 올바르게 지정해야 클라이언트가 알맞게 처리할 수 있다.
+- 지정할 Content-Type: html,css,js,ico,png,jpg,svg
