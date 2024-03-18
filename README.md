@@ -23,7 +23,12 @@
 - 302 Found (또는 307 Temporary Redirect): 리소스의 위치가 일시적으로 변경되었을 때 사용됩니다.
 - HTTP 응답 헤더에 Location 헤더의 값을 통해 클라이언트가 이동해야할 위치를 나타낸다.
 
-## 웹 서버 3단계 - 다양한 컨텐츠 타입 지원
+## 웹서버 3단계 - 다양한 컨텐츠 타입 지원
 - 다양한 Content-Type을 처리하기 (html,css,js,ico,png,jpg,svg)
 - HTTP Response 헤더의 Content-Type을 text/html로 보내면 클라이언트는 html 파일로 인식한다.
 - Content-Type은 확장자를 통해 구분할 수도 있고, Request Header의 Accept를 활용할 수도 있다.
+
+## 웹서버 4단계 - POST로 회원가입
+- HTML form 태그의 method를 get에서 post로 수정하기
+- POST method로 데이터를 전달할 경우 전달하는 데이터는 HTTP Body에 담긴다.
+- 가입 후 페이지 이동을 위해 HTTP redirection 기능 구현하기
