@@ -3,25 +3,21 @@ package webserver;
 import http.ContentType;
 import http.HttpRequest;
 import http.HttpResponse;
-import http.HttpStatus;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-
-import java.nio.charset.StandardCharsets;
-import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RequestHandler implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String DEFAULT_PATH = "./src/main/resources/static/";
-    private static final String INDEX_FILE = "index.html";
     private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
@@ -35,74 +31,45 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             HttpRequest httpRequest = new HttpRequest(in);
-            String uri = httpRequest.getUri();
+            String method = httpRequest.getMethod();
+            String resource = httpRequest.getResource();
 
-            ContentType[] values = ContentType.values();
             String contentType = "text/html";
-
-            if (uri.contains("/create")) {
-//                String queryParameter = uri.split("\\?")[1];
-//                User user = User.from(queryParameter);
-//                logger.debug(user.toString());
-//                redirectToIndexPage(out); // index.html 페이지로 리다이렉트
-//                return;
-            } else {
-                String ext = uri.split("\\.")[1];
-                for (ContentType type : values) {
-                    if (type.getName().equals(ext)) {
-                        contentType = type.getContentType();
-                    }
-                }
-            }
-
-            String filePath = DEFAULT_PATH + uri;
-
-            // 파일 내용을 읽어들임
-            File file = new File(filePath);
-            byte[] body;
-            HttpStatus httpStatus;
-
-            if (file.exists()) {
-                httpStatus = HttpStatus.OK;
-                body = readFileContent(file);
-            } else {
-                httpStatus = HttpStatus.NOT_FOUND;
-                body = httpStatus.getMessage().getBytes(StandardCharsets.UTF_8);
-            }
-            logger.debug(httpStatus.getMessage(), filePath);
 
             // 클라이언트에게 응답을 전송
             DataOutputStream dos = new DataOutputStream(out);
             HttpResponse httpResponse = new HttpResponse();
-            httpResponse.responseHeader(dos, body.length, httpStatus, contentType);
-            httpResponse.responseBody(dos, body);
+
+            if (method.equals("GET")) {
+                // 파일 내용을 읽어들임
+                File file = new File(DEFAULT_PATH + resource);
+                if (file.exists() && !file.isDirectory()) {
+                    String ext = resource.split("\\.")[1];
+                    for (ContentType type : ContentType.values()) {
+                        if (type.getName().equals(ext)) {
+                            contentType = type.getContentType();
+                        }
+                    }
+                    byte[] body = readFileContent(file);
+                    httpResponse.response200Header(dos, body, contentType);
+                } else {
+                    httpResponse.response404Header(dos);
+                }
+            } else if (method.equals("POST")) {
+                httpResponse.response302Header(dos);
+            }
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
-    private void redirectToIndexPage(OutputStream out) {
-        try {
-            String response = "HTTP/1.1 307 Temporary Redirect\r\n" +
-                    "Location: " + INDEX_FILE + "\r\n" +
-                    "\r\n";
-
-            out.write(response.getBytes(StandardCharsets.UTF_8));
-            out.flush();
-        } catch (IOException e) {
-            logger.error("Error while redirecting: {}", e.getMessage());
-        }
-    }
-
-    private byte[] readFileContent(File file) throws IOException {
+    private byte[] readFileContent(File file) {
+        byte[] buffer = new byte[(int) file.length()];
         try (FileInputStream fis = new FileInputStream(file)) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = fis.read(buffer)) != -1) {
-                bos.write(buffer, 0, bytesRead);
-            }
-            return bos.toByteArray();
+            fis.read(buffer);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+        return buffer;
     }
 }
