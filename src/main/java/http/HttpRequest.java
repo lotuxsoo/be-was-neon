@@ -39,6 +39,7 @@ public class HttpRequest {
         }
 
         this.requestLine = requests.get(0);
+        logger.debug(requestLine);
         this.method = requestLine.split(" ")[0];
         this.resource = requestLine.split(" ")[1];
 

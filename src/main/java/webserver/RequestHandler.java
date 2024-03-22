@@ -53,7 +53,7 @@ public class RequestHandler implements Runnable {
                 } else {
                     httpResponse.response404Header(dos);
                 }
-            } else if (method.equals("POST")) {
+            } else if (method.equals("POST") && resource.startsWith("/create")) {
                 httpResponse.response302Header(dos);
             }
         } catch (IOException e) {
