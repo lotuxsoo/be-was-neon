@@ -13,4 +13,8 @@ public class RequestHandlerMapper {
         put("/create", new CreateHandler());
         put("/login", new LoginHandler());
     }};
+
+    RequestHandler getHandler(String uri) {
+        return map.get(uri);
+    }
 }

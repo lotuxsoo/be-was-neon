@@ -2,8 +2,55 @@ package http;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpResponse {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final String CRLF = "\r\n";
+    private static final String SP = " ";
+    private HttpStatus status;
+    private String headers;
+    private byte[] body;
+
+    public HttpResponse() {
+        headers = "";
+        body = new byte[0];
+    }
+
+    private void setStatus(HttpStatus status) {
+        headers += "HTTP/1.1" + status.getCode() + SP + status.getMessage() + CRLF;
+    }
+
+    private void setContentType(String contentType) {
+        headers += "Content-Type: " + contentType + CRLF;
+    }
+
+    private void setContentLength(int contentLength) {
+        headers += "Content-Length: " + contentLength + CRLF;
+    }
+
+    private void setLocation(String location) {
+        headers += "Location: " + location + CRLF;
+    }
+
+    private void setCookie() {
+        headers += "Set-Cookie: sid";
+    }
+
+    public void send(OutputStream out) throws IOException {
+        DataOutputStream dos = new DataOutputStream(out);
+        try {
+            dos.writeBytes(headers);
+            dos.write(body, 0, body.length);
+            dos.flush();
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    /*
     public void response200Header(DataOutputStream dos, byte[] body,
                                   String contentType) throws IOException {
         dos.writeBytes("HTTP/1.1 200 OK\r\n");
@@ -37,4 +84,5 @@ public class HttpResponse {
         dos.writeBytes(message);
         dos.flush();
     }
+    */
 }
