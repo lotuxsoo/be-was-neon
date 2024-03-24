@@ -33,7 +33,7 @@ public class HttpResponse {
         String message = "404 Not Found";
         dos.writeBytes("HTTP/1.1 404 Not Found\r\n");
         dos.writeBytes("Content-Type: text/plain\r\n");
-        dos.writeBytes("Content-Length: " + message.length() + "\r\n\r\n");
+        dos.writeBytes("Content-Length: " + message.length() + "\r\n");
         dos.writeBytes(message);
         dos.flush();
     }
