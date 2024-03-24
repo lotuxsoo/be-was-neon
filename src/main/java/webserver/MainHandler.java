@@ -13,12 +13,12 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RequestHandler implements Runnable {
+public class MainHandler implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String DEFAULT_PATH = "./src/main/resources/static/";
     private final Socket connection;
 
-    public RequestHandler(Socket connectionSocket) {
+    public MainHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
     }
 
