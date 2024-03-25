@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RequestReader {
+    private final Logger logger = LoggerFactory.getLogger(RequestReader.class);
     private final BufferedReader br;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public RequestReader(InputStream in) {
         br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
@@ -35,7 +35,6 @@ public class RequestReader {
 
     private Map<String, String> readHeaders() throws IOException {
         Map<String, String> requestHeader = new HashMap<String, String>();
-
         String line;
         while ((line = br.readLine()) != null && !line.isEmpty()) {
             String[] split = line.split(": ");

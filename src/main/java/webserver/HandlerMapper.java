@@ -1,8 +1,8 @@
 package webserver;
 
+import http.HttpRequest;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import webserver.handler.CreateHandler;
 import webserver.handler.HomeHandler;
 import webserver.handler.LoginHandler;
@@ -16,7 +16,8 @@ public class HandlerMapper {
         put("/user/login", new LoginHandler());
     }};
 
-    public RequestHandler getHandler(String uri) {
+    public RequestHandler getHandler(HttpRequest httpRequest) {
+        String uri = httpRequest.getUri();
         return map.getOrDefault(uri, new StaticFileHandler());
     }
 }

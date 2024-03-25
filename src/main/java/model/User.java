@@ -1,9 +1,6 @@
 package model;
 
-import static utils.StringUtil.getTokens;
-
 import db.Database;
-import java.util.HashMap;
 import java.util.Map;
 
 public class User {
@@ -19,18 +16,9 @@ public class User {
         this.email = email;
     }
 
-    public static User makeUser(String queryParameter) {
-        Map<String, String> map = new HashMap<String, String>();
-
-        String[] params = getTokens(queryParameter, "&");
-
-        for (int i = 0; i < params.length; i++) {
-            String[] tokens = getTokens(params[i], "=");
-            map.put(tokens[0], tokens[1]);
-        }
-
-        User user = new User(map.get("userId"), map.get("password"), map.get("name"),
-                map.get("email"));
+    public static User makeUser(Map<String, String> queryMap) {
+        User user = new User(queryMap.get("userId"), queryMap.get("password"), queryMap.get("name"),
+                queryMap.get("email"));
         Database.addUser(user);
         return Database.findUserById(user.getUserId());
     }

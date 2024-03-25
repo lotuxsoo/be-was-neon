@@ -10,32 +10,36 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StaticFileHandler implements RequestHandler{
+public class StaticFileHandler implements RequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(StaticFileHandler.class);
     private static final String DEFAULT_PATH = "./src/main/resources/static";
 
     @Override
-    public void handle(HttpRequest request, HttpResponse response) {
-        File file = new File(DEFAULT_PATH + request.getUri());
-        logger.debug(DEFAULT_PATH + request.getUri());
+    public HttpResponse handle(HttpRequest httpRequest) {
+        File file = new File(DEFAULT_PATH + httpRequest.getUri());
+        logger.debug(DEFAULT_PATH + httpRequest.getUri());
+
+        HttpResponse httpResponse = new HttpResponse();
 
         if (file.exists() && !file.isDirectory()) {
-            response.setStatus(HttpStatus.OK);
-            String ext = request.getUri().split("\\.")[1];
+            httpResponse.setStatus(HttpStatus.OK);
+
+            String ext = httpRequest.getUri().split("\\.")[1];
             for (ContentType type : ContentType.values()) {
                 if (type.getName().equals(ext)) {
                     String contentType = type.getContentType();
-                    response.setContentType(contentType);
+                    httpResponse.setContentType(contentType);
                 }
             }
 
             byte[] body = readFileContent(file);
-            response.setBody(body);
-            response.setContentLength(body.length);
+            httpResponse.setBody(body);
+            httpResponse.setContentLength(body.length);
         } else {
-            response.setStatus(HttpStatus.NOT_FOUND);
+            httpResponse.setStatus(HttpStatus.NOT_FOUND);
         }
-        logger.debug(response.getHeaders());
+        logger.debug(httpResponse.getHeaders());
+        return httpResponse;
     }
 
     private byte[] readFileContent(File file) {
