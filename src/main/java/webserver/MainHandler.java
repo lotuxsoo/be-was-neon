@@ -3,21 +3,19 @@ package webserver;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.RequestReader;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.handler.RequestHandler;
 
-public class RequestHandler implements Runnable {
+public class MainHandler implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Socket connection;
 
-    public RequestHandler(Socket connectionSocket) {
+    public MainHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
     }
 
@@ -28,18 +26,16 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             RequestReader reader = new RequestReader(in);
-            //HttpRequest httpRequest = new HttpRequest(in);
+            HttpRequest httpRequest = reader.readRequest();
+
+            HandlerMapper handlerMapper = new HandlerMapper();
+            RequestHandler handler = handlerMapper.getHandler(httpRequest.getUri());
 
             HttpResponse httpResponse = new HttpResponse();
-
-            RequestHandlerMapper handlerMapper = new RequestHandlerMapper();
-
-            RequestHandler handler = handlerMapper.getHandler(resource);
 
             handler.handle(httpRequest, httpResponse);
 
             httpResponse.send(out);
-
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

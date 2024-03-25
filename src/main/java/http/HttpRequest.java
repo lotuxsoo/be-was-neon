@@ -25,6 +25,14 @@ public class HttpRequest {
         this.requestBody = requestBody;
     }
 
+    public String getUri() {
+        String uri = requestLine.split(" ")[1];
+        if (uri.contains("\\?")) {
+            return uri.split("\\?")[0];
+        }
+        return uri;
+    }
+
 //    private Map<String, String> readRequestBody(BufferedReader br) throws IOException {
 //
 //        int contentLength = Integer.parseInt(requestHeader.get("Content-Length"));

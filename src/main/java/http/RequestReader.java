@@ -15,34 +15,29 @@ import org.slf4j.LoggerFactory;
 public class RequestReader {
     private final BufferedReader br;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private String requestLine;
-    private Map<String, String> requestHeader;
-    private String requestBody;
 
     public RequestReader(InputStream in) {
         br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
     }
 
     public HttpRequest readRequest() throws IOException {
-        this.requestHeader = readHeaders();
-        this.requestBody = readBody();
+        String requestLine = br.readLine();
+        logger.debug(requestLine);
+
+        Map<String, String> requestHeader = readHeaders();
+
+        int contentLength = Integer.parseInt(requestHeader.get("Content-Length"));
+        String requestBody = readBody(contentLength);
+
         return new HttpRequest(requestLine, requestHeader, requestBody);
     }
 
     private Map<String, String> readHeaders() throws IOException {
-        requestHeader = new HashMap<String, String>();
-        List<String> requests = new ArrayList<>();
+        Map<String, String> requestHeader = new HashMap<String, String>();
 
         String line;
         while ((line = br.readLine()) != null && !line.isEmpty()) {
-            requests.add(line);
-        }
-
-        this.requestLine = requests.get(0);
-        logger.debug(requestLine);
-
-        for (int i = 1; i < requests.size(); i++) {
-            String[] split = requests.get(i).split(": ");
+            String[] split = line.split(": ");
             requestHeader.put(split[0], split[1]);
         }
 
@@ -53,8 +48,7 @@ public class RequestReader {
         return requestHeader;
     }
 
-    private String readBody() throws IOException {
-        int contentLength = Integer.parseInt(requestHeader.get("Content-Length"));
+    private String readBody(int contentLength) throws IOException {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < contentLength; i++) {
             sb.append((char) br.read());

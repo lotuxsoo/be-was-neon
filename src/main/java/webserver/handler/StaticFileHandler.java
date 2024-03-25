@@ -15,7 +15,7 @@ public class StaticFileHandler implements RequestHandler{
         File file = new File(DEFAULT_PATH + "index.html");
 
         if (file.exists() && !file.isDirectory()) {
-            String ext = request.getResource().split("\\.")[1];
+            String ext = request.getUri().split("\\.")[1];
             for (ContentType type : ContentType.values()) {
                 if (type.getName().equals(ext)) {
                     String contentType = type.getContentType();
