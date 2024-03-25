@@ -38,8 +38,8 @@ public class HttpResponse {
         headers.put("Location", "Location: " + location + CRLF);
     }
 
-    public void addCookie() {
-        headers.put("Cookie", "Set-Cookie: sid");
+    public void addCookie(String cookie) {
+        headers.put("Cookie", "Set-Cookie: " + cookie + " Path=/" + CRLF);
     }
 
     public void setBody(byte[] body) {

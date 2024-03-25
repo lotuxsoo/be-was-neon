@@ -16,15 +16,19 @@ public class User {
         this.email = email;
     }
 
-    public static User makeUser(Map<String, String> queryMap) {
-        User user = new User(queryMap.get("userId"), queryMap.get("password"), queryMap.get("name"),
-                queryMap.get("email"));
+    public static User makeUser(Map<String, String> paramMap) {
+        User user = new User(paramMap.get("userId"), paramMap.get("password"), paramMap.get("name"),
+                paramMap.get("email"));
         Database.addUser(user);
-        return Database.findUserById(user.getUserId());
+        return user;
     }
 
     public String getUserId() {
         return userId;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     @Override

@@ -12,7 +12,7 @@ public class HttpRequest {
     private String path;
     private Map<String, String> headers;
     private String body;
-    private Map<String, String> queryMap;
+    private Map<String, String> paramMap;
 
     public HttpRequest(String requestLine, Map<String, String> headers, String body) {
         this.requestLine = requestLine;
@@ -37,18 +37,18 @@ public class HttpRequest {
         return headers.get(name);
     }
 
-    public Map<String, String> getQueryMap() {
+    public Map<String, String> getParamMap() {
         //userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net
-        queryMap = new HashMap<>();
+        paramMap = new HashMap<>();
         String[] params = body.split("&");
         for (String param : params) {
             String[] split = param.split("=");
-            queryMap.put(split[0], split[1]);
+            paramMap.put(split[0], split[1]);
         }
-        return queryMap;
+        return paramMap;
     }
 
     public String getParameter(String name) {
-        return queryMap.get(name);
+        return paramMap.get(name);
     }
 }
