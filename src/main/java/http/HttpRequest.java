@@ -1,20 +1,12 @@
 package http;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class HttpRequest {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
     private String requestLine;
     private Map<String, String> requestHeader;
     private String requestBody;
@@ -28,22 +20,21 @@ public class HttpRequest {
     public String getUri() {
         String uri = requestLine.split(" ")[1];
         if (uri.contains("\\?")) {
+            logger.debug(uri.split("\\?")[0]);
             return uri.split("\\?")[0];
         }
         return uri;
     }
 
-//    private Map<String, String> readRequestBody(BufferedReader br) throws IOException {
-//
-//        int contentLength = Integer.parseInt(requestHeader.get("Content-Length"));
-//        StringBuilder sb = new StringBuilder();
-//        for (int i = 0; i < contentLength; i++) {
-//            sb.append((char) br.read());
-//        }
-//
-//        User user = User.makeUser(sb.toString());
-//        logger.debug("User: " + user.toString());
-//
-//        return requestBody;
-//    }
+    public Map<String, String> getQueryMap() {
+        //userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net
+        Map<String, String> queryMap = new HashMap<>();
+        String uri = requestLine.split(" ")[1];
+        String[] params = uri.split("\\?")[1].split("&");
+        for (String param : params) {
+            String[] split = param.split("=");
+            queryMap.put(split[0], split[1]);
+        }
+        return queryMap;
+    }
 }

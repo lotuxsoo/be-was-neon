@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class HttpResponse {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
     private static final String CRLF = "\r\n";
     private static final String SP = " ";
     private static final String HTTP_VERSION = "HTTP/1.1 ";

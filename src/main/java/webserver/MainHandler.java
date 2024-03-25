@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import webserver.handler.RequestHandler;
 
 public class MainHandler implements Runnable {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(MainHandler.class);
     private final Socket connection;
 
     public MainHandler(Socket connectionSocket) {
@@ -28,14 +28,14 @@ public class MainHandler implements Runnable {
             RequestReader reader = new RequestReader(in);
 
             HttpRequest httpRequest = reader.readRequest();
-            HttpResponse httpResponse = new HttpResponse();
 
             HandlerMapper handlerMapper = new HandlerMapper();
 
-            RequestHandler handler = handlerMapper.getHandler(httpRequest.getUri());
-            handler.handle(httpRequest, httpResponse);
+            RequestHandler handler = handlerMapper.getHandler(httpRequest);
 
+            HttpResponse httpResponse = handler.handle(httpRequest);
             httpResponse.send(out);
+
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

@@ -5,7 +5,9 @@ import http.HttpResponse;
 
 public class LoginHandler implements RequestHandler{
     @Override
-    public void handle(HttpRequest request, HttpResponse response) {
+    public HttpResponse handle(HttpRequest httpRequest) {
+        HttpResponse httpResponse = new HttpResponse();
 
+        return httpResponse;
     }
 }
