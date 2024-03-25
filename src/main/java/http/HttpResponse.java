@@ -10,13 +10,17 @@ public class HttpResponse {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String CRLF = "\r\n";
     private static final String SP = " ";
-    private static final String HTTP_VERSION = "HTTP/1.1";
+    private static final String HTTP_VERSION = "HTTP/1.1 ";
     private String headers;
     private byte[] body;
 
     public HttpResponse() {
         headers = "";
         body = new byte[0];
+    }
+
+    public String getHeaders() {
+        return headers;
     }
 
     public void setStatus(HttpStatus status) {
@@ -31,6 +35,10 @@ public class HttpResponse {
         headers += "Content-Length: " + contentLength + CRLF;
     }
 
+    public void setBody(byte[] body) {
+        this.body = body;
+    }
+
     public void setLocation(String location) {
         headers += "Location: " + location + CRLF;
     }
@@ -43,6 +51,7 @@ public class HttpResponse {
         DataOutputStream dos = new DataOutputStream(out);
         try {
             dos.writeBytes(headers);
+            dos.writeBytes(HttpResponse.CRLF);
             dos.write(body, 0, body.length);
             dos.flush();
         } catch (IOException e) {
