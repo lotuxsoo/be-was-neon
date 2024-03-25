@@ -10,6 +10,7 @@ public class HttpResponse {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String CRLF = "\r\n";
     private static final String SP = " ";
+    private static final String HTTP_VERSION = "HTTP/1.1";
     private String headers;
     private byte[] body;
 
@@ -19,7 +20,7 @@ public class HttpResponse {
     }
 
     public void setStatus(HttpStatus status) {
-        headers += "HTTP/1.1" + status.getCode() + SP + status.getMessage() + CRLF;
+        headers += HTTP_VERSION + status.getCode() + SP + status.getMessage() + CRLF;
     }
 
     public void setContentType(String contentType) {

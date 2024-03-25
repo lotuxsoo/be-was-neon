@@ -11,7 +11,6 @@ import webserver.handler.StaticFileHandler;
 public class HandlerMapper {
     private final Map<String, RequestHandler> map = new HashMap<>() {{
         put("/", new HomeHandler());
-        put("/index.html", new StaticFileHandler());
         put("/user/create", new CreateHandler());
         put("/user/login", new LoginHandler());
     }};
