@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,30 +23,30 @@ public class RequestManager {
         String requestLine = br.readLine();
         logger.debug(requestLine);
 
-        Map<String, String> requestHeader = readHeaders();
+        Map<String, String> headers = readHeaders();
 
-        String requestBody = "";
-        if (requestHeader.containsKey("Content-Length")) {
-            int contentLength = Integer.parseInt(requestHeader.get("Content-Length"));
-            requestBody = readBody(contentLength);
+        String body = "";
+        if (headers.containsKey("Content-Length")) {
+            int contentLength = Integer.parseInt(headers.get("Content-Length"));
+            body = readBody(contentLength);
         }
 
-        return new HttpRequest(requestLine, requestHeader, requestBody);
+        return new HttpRequest(requestLine, headers, body);
     }
 
     private Map<String, String> readHeaders() throws IOException {
-        Map<String, String> requestHeader = new HashMap<String, String>();
+        Map<String, String> headers = new HashMap<String, String>();
         String line;
         while ((line = br.readLine()) != null && !line.isEmpty()) {
             String[] split = line.split(": ");
-            requestHeader.put(split[0], split[1]);
+            headers.put(split[0], split[1]);
         }
 
-        for (String key : requestHeader.keySet()) {
-            logger.debug(key + " " + requestHeader.get(key));
+        for (String key : headers.keySet()) {
+            logger.debug(key + " " + headers.get(key));
         }
 
-        return requestHeader;
+        return headers;
     }
 
     private String readBody(int contentLength) throws IOException {
@@ -58,6 +59,6 @@ public class RequestManager {
             sb.append((char) br.read());
         }
 
-        return sb.toString();
+        return URLDecoder.decode(sb.toString(), "UTF-8");
     }
 }
