@@ -40,7 +40,7 @@ public class HttpRequest {
     public Map<String, String> getQueryMap() {
         //userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net
         queryMap = new HashMap<>();
-        String[] params = path.split("\\?")[1].split("&");
+        String[] params = body.split("&");
         for (String param : params) {
             String[] split = param.split("=");
             queryMap.put(split[0], split[1]);

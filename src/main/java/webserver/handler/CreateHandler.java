@@ -15,7 +15,7 @@ public class CreateHandler implements RequestHandler {
     public void handle(HttpRequest httpRequest, HttpResponse httpResponse) {
         Map<String, String> queryMap = httpRequest.getQueryMap();
         User user = User.makeUser(queryMap);
-        logger.debug(user.toString());
+        logger.debug("신규 유저가 생성되었습니다. {}", user);
 
         httpResponse.addStatus(HttpStatus.FOUND);
         httpResponse.addLocation("/index.html");
