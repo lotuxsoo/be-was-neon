@@ -10,7 +10,6 @@ public class HttpResponse {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String CRLF = "\r\n";
     private static final String SP = " ";
-    private HttpStatus status;
     private String headers;
     private byte[] body;
 
@@ -19,23 +18,23 @@ public class HttpResponse {
         body = new byte[0];
     }
 
-    private void setStatus(HttpStatus status) {
+    public void setStatus(HttpStatus status) {
         headers += "HTTP/1.1" + status.getCode() + SP + status.getMessage() + CRLF;
     }
 
-    private void setContentType(String contentType) {
+    public void setContentType(String contentType) {
         headers += "Content-Type: " + contentType + CRLF;
     }
 
-    private void setContentLength(int contentLength) {
+    public void setContentLength(int contentLength) {
         headers += "Content-Length: " + contentLength + CRLF;
     }
 
-    private void setLocation(String location) {
+    public void setLocation(String location) {
         headers += "Location: " + location + CRLF;
     }
 
-    private void setCookie() {
+    public void setCookie() {
         headers += "Set-Cookie: sid";
     }
 

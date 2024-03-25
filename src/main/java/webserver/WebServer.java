@@ -26,7 +26,7 @@ public class WebServer {
             Socket connection;
             while ((connection = listenSocket.accept()) != null) {
                 // 요청 처리를 담당할 Runnable 객체를 생성하여 스레드 풀에 제출한다.
-                executorService.execute(new MainHandler(connection));
+                executorService.execute(new RequestHandler(connection));
             }
         } finally {
             // 프로그램 종료 시 스레드 풀을 종료한다.
