@@ -27,7 +27,7 @@ public class HttpRequest {
     }
 
     public String getPath() {
-        if (path.contains("\\?")) {
+        if (path.contains("?")) {
             return path.split("\\?")[0];
         }
         return path;

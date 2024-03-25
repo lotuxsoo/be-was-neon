@@ -2,7 +2,7 @@ package webserver;
 
 import http.HttpRequest;
 import http.HttpResponse;
-import http.RequestReader;
+import http.RequestManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -25,9 +25,9 @@ public class MainHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
-            RequestReader reader = new RequestReader(in);
+            RequestManager manager = new RequestManager(in);
 
-            HttpRequest httpRequest = reader.readRequest();
+            HttpRequest httpRequest = manager.readRequest();
 
             HandlerMapper handlerMapper = new HandlerMapper();
 
