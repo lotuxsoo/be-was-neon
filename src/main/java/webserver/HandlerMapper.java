@@ -8,12 +8,12 @@ import webserver.handler.LoginHandler;
 import webserver.handler.RequestHandler;
 import webserver.handler.StaticFileHandler;
 
-public class RequestHandlerMapper {
+public class HandlerMapper {
     private final Map<String, RequestHandler> map = new HashMap<>() {{
         put("/", new HomeHandler());
         put("/index.html", new StaticFileHandler());
-        put("/create", new CreateHandler());
-        put("/login", new LoginHandler());
+        put("/user/create", new CreateHandler());
+        put("/user/login", new LoginHandler());
     }};
 
     public RequestHandler getHandler(String uri) {
