@@ -10,11 +10,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RequestReader {
-    private final Logger logger = LoggerFactory.getLogger(RequestReader.class);
+public class RequestManager {
+    private final Logger logger = LoggerFactory.getLogger(RequestManager.class);
     private final BufferedReader br;
 
-    public RequestReader(InputStream in) {
+    public RequestManager(InputStream in) {
         br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
     }
 

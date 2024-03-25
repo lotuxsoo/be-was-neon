@@ -56,7 +56,7 @@ public class HttpResponse {
         DataOutputStream dos = new DataOutputStream(out);
         try {
             dos.writeBytes(getHeaders());
-            dos.writeBytes(HttpResponse.CRLF);
+            dos.writeBytes(CRLF);
             dos.write(body, 0, body.length);
             dos.flush();
         } catch (IOException e) {
