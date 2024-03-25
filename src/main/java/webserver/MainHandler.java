@@ -26,13 +26,13 @@ public class MainHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             RequestReader reader = new RequestReader(in);
+
             HttpRequest httpRequest = reader.readRequest();
-
-            HandlerMapper handlerMapper = new HandlerMapper();
-            RequestHandler handler = handlerMapper.getHandler(httpRequest.getUri());
-
             HttpResponse httpResponse = new HttpResponse();
 
+            HandlerMapper handlerMapper = new HandlerMapper();
+
+            RequestHandler handler = handlerMapper.getHandler(httpRequest.getUri());
             handler.handle(httpRequest, httpResponse);
 
             httpResponse.send(out);

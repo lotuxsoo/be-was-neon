@@ -10,9 +10,10 @@ import java.io.IOException;
 
 public class StaticFileHandler implements RequestHandler{
     private static final String DEFAULT_PATH = "src/main/resources/static/";
+    private static final String INDEX_FILE = "index.html";
     @Override
     public void handle(HttpRequest request, HttpResponse response) {
-        File file = new File(DEFAULT_PATH + "index.html");
+        File file = new File(DEFAULT_PATH + INDEX_FILE);
 
         if (file.exists() && !file.isDirectory()) {
             String ext = request.getUri().split("\\.")[1];

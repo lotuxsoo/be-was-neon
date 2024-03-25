@@ -26,8 +26,11 @@ public class RequestReader {
 
         Map<String, String> requestHeader = readHeaders();
 
-        int contentLength = Integer.parseInt(requestHeader.get("Content-Length"));
-        String requestBody = readBody(contentLength);
+        String requestBody = "";
+        if (requestHeader.containsKey("Content-Length")) {
+            int contentLength = Integer.parseInt(requestHeader.get("Content-Length"));
+            requestBody = readBody(contentLength);
+        }
 
         return new HttpRequest(requestLine, requestHeader, requestBody);
     }
@@ -49,10 +52,15 @@ public class RequestReader {
     }
 
     private String readBody(int contentLength) throws IOException {
+        if (contentLength == 0) {
+            return "";
+        }
+
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < contentLength; i++) {
             sb.append((char) br.read());
         }
+
         return sb.toString();
     }
 }
