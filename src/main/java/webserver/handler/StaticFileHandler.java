@@ -15,31 +15,27 @@ public class StaticFileHandler implements RequestHandler {
     private static final String DEFAULT_PATH = "./src/main/resources/static";
 
     @Override
-    public HttpResponse handle(HttpRequest httpRequest) {
-        File file = new File(DEFAULT_PATH + httpRequest.getUri());
-        logger.debug(DEFAULT_PATH + httpRequest.getUri());
-
-        HttpResponse httpResponse = new HttpResponse();
+    public void handle(HttpRequest httpRequest, HttpResponse httpResponse) {
+        File file = new File(DEFAULT_PATH + httpRequest.getPath());
+        logger.debug(DEFAULT_PATH + httpRequest.getPath());
 
         if (file.exists() && !file.isDirectory()) {
-            httpResponse.setStatus(HttpStatus.OK);
+            httpResponse.addStatus(HttpStatus.OK);
 
-            String ext = httpRequest.getUri().split("\\.")[1];
+            String ext = httpRequest.getPath().split("\\.")[1];
             for (ContentType type : ContentType.values()) {
                 if (type.getName().equals(ext)) {
                     String contentType = type.getContentType();
-                    httpResponse.setContentType(contentType);
+                    httpResponse.addContentType(contentType);
                 }
             }
 
             byte[] body = readFileContent(file);
             httpResponse.setBody(body);
-            httpResponse.setContentLength(body.length);
+            httpResponse.addContentLength(body.length);
         } else {
-            httpResponse.setStatus(HttpStatus.NOT_FOUND);
+            httpResponse.addStatus(HttpStatus.NOT_FOUND);
         }
-        logger.debug(httpResponse.getHeaders());
-        return httpResponse;
     }
 
     private byte[] readFileContent(File file) {
