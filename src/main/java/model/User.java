@@ -19,7 +19,7 @@ public class User {
         this.email = email;
     }
 
-    public static User from(String queryParameter) {
+    public static User makeUser(String queryParameter) {
         Map<String, String> map = new HashMap<String, String>();
 
         String[] params = getTokens(queryParameter, "&");

@@ -2,30 +2,32 @@ package http;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class HttpResponse {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    public void responseHeader(DataOutputStream dos, int lengthOfBodyContent, HttpStatus httpStatus,
-                               String contentType) {
-        try {
-            dos.writeBytes("HTTP/1.1" + " " + httpStatus.getCode() + " " + httpStatus.getMessage() + "\r\n");
-            dos.writeBytes("Content-Type: " + contentType + "\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+    public void response200Header(DataOutputStream dos, byte[] body,
+                                  String contentType) throws IOException {
+        dos.writeBytes("HTTP/1.1 200 OK\r\n");
+        dos.writeBytes("Content-Type: " + contentType + "\r\n");
+        dos.writeBytes("Content-Length: " + body.length + "\r\n");
+        dos.writeBytes("\r\n");
+        dos.write(body, 0, body.length);
+        dos.flush();
     }
 
-    public void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+    public void response302Header(DataOutputStream dos) throws IOException {
+        dos.writeBytes("HTTP/1.1 302 Found\r\n");
+        dos.writeBytes("Location: /index.html");
+        dos.writeBytes("\r\n");
+        dos.flush();
+    }
+
+    public void response404Header(DataOutputStream dos) throws IOException {
+        String message = "404 Not Found";
+        dos.writeBytes("HTTP/1.1" + message + "r\n" +
+                "Content-Type: text/plain\r\n" +
+                "Content-Length: " + message.length() + "\r\n" +
+                "\r\n" +
+                message);
+        dos.flush();
     }
 }
