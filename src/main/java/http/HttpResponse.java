@@ -3,6 +3,8 @@ package http;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,46 +13,49 @@ public class HttpResponse {
     private static final String CRLF = "\r\n";
     private static final String SP = " ";
     private static final String HTTP_VERSION = "HTTP/1.1 ";
-    private String headers;
+    private Map<String, String> headers;
     private byte[] body;
 
     public HttpResponse() {
-        headers = "";
+        headers = new HashMap<>();
         body = new byte[0];
     }
 
-    public String getHeaders() {
-        return headers;
+    public void addStatus(HttpStatus status) {
+        headers.put("Start-Line", HTTP_VERSION + status.getCode() + SP + status.getMessage() + CRLF);
     }
 
-    public void setStatus(HttpStatus status) {
-        headers += HTTP_VERSION + status.getCode() + SP + status.getMessage() + CRLF;
+    public void addContentType(String contentType) {
+        headers.put("Content-Type", "Content-Type: " + contentType + CRLF);
     }
 
-    public void setContentType(String contentType) {
-        headers += "Content-Type: " + contentType + CRLF;
+    public void addContentLength(int contentLength) {
+        headers.put("Content-Length", "Content-Length: " + contentLength + CRLF);
     }
 
-    public void setContentLength(int contentLength) {
-        headers += "Content-Length: " + contentLength + CRLF;
+
+    public void addLocation(String location) {
+        headers.put("Location", "Location: " + location + CRLF);
+    }
+
+    public void addCookie() {
+        headers.put("Cookie", "Set-Cookie: sid");
     }
 
     public void setBody(byte[] body) {
         this.body = body;
     }
 
-    public void setLocation(String location) {
-        headers += "Location: " + location + CRLF;
-    }
-
-    public void setCookie() {
-        headers += "Set-Cookie: sid";
+    public String getHeaders() {
+        StringBuilder sb = new StringBuilder();
+        headers.keySet().forEach(key -> sb.append(headers.get(key)));
+        return sb.toString();
     }
 
     public void send(OutputStream out) throws IOException {
         DataOutputStream dos = new DataOutputStream(out);
         try {
-            dos.writeBytes(headers);
+            dos.writeBytes(getHeaders());
             dos.writeBytes(HttpResponse.CRLF);
             dos.write(body, 0, body.length);
             dos.flush();

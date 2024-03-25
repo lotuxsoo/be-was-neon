@@ -33,7 +33,10 @@ public class MainHandler implements Runnable {
 
             RequestHandler handler = handlerMapper.getHandler(httpRequest);
 
-            HttpResponse httpResponse = handler.handle(httpRequest);
+            HttpResponse httpResponse = new HttpResponse();
+
+            handler.handle(httpRequest, httpResponse);
+
             httpResponse.send(out);
 
         } catch (IOException e) {

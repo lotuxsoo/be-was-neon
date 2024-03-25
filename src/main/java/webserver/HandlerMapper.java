@@ -17,7 +17,6 @@ public class HandlerMapper {
     }};
 
     public RequestHandler getHandler(HttpRequest httpRequest) {
-        String uri = httpRequest.getUri();
-        return map.getOrDefault(uri, new StaticFileHandler());
+        return map.getOrDefault(httpRequest.getPath(), new StaticFileHandler());
     }
 }

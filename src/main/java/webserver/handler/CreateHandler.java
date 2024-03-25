@@ -12,14 +12,12 @@ public class CreateHandler implements RequestHandler {
     private final Logger logger = LoggerFactory.getLogger(CreateHandler.class);
 
     @Override
-    public HttpResponse handle(HttpRequest httpRequest) {
+    public void handle(HttpRequest httpRequest, HttpResponse httpResponse) {
         Map<String, String> queryMap = httpRequest.getQueryMap();
         User user = User.makeUser(queryMap);
         logger.debug(user.toString());
 
-        HttpResponse httpResponse = new HttpResponse();
-        httpResponse.setStatus(HttpStatus.FOUND);
-        httpResponse.setLocation("/index.html");
-        return httpResponse;
+        httpResponse.addStatus(HttpStatus.FOUND);
+        httpResponse.addLocation("/index.html");
     }
 }
