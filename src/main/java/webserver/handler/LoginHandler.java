@@ -15,17 +15,21 @@ public class LoginHandler implements RequestHandler {
 
     @Override
     public void handle(HttpRequest httpRequest, HttpResponse httpResponse) {
-        String userId = httpRequest.getParameter("userId");
-        String password = httpRequest.getParameter("password");
-        User user = Database.findUserById(userId);
-        logger.debug("User: " + user);
+        Map<String, String> paramMap = httpRequest.getParamMap();
 
-        if (user.getUserId().equals(userId) && user.getPassword().equals(password)) {
-            String cookie = String.format("sid=%s;", UUID.randomUUID().toString());
-            httpResponse.addCookie(cookie);
+        String userId = paramMap.get("userId");
+        String password = paramMap.get("password");
+        User user = Database.findUserById(userId);
+
+        if (user != null && user.getUserId().equals(userId) && user.getPassword().equals(password)) {
+            String cookie = String.format("sid=%s;", UUID.randomUUID());
             httpResponse.addStatus(HttpStatus.FOUND);
+            httpResponse.addCookie(cookie);
             httpResponse.addLocation("/index.html");
+            logger.debug("로그인이 성공했습니다. {}", user);
+        } else {
+            httpResponse.addStatus(HttpStatus.NOT_FOUND);
+            httpResponse.addLocation("/login/failed.html");
         }
-        
     }
 }

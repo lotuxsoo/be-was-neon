@@ -47,8 +47,4 @@ public class HttpRequest {
         }
         return paramMap;
     }
-
-    public String getParameter(String name) {
-        return paramMap.get(name);
-    }
 }
