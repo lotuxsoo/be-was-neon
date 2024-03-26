@@ -36,7 +36,6 @@ public class MainHandler implements Runnable {
             handler.handle(httpRequest, httpResponse);
 
             httpResponse.send(out);
-
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
