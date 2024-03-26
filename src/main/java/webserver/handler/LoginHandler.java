@@ -28,7 +28,7 @@ public class LoginHandler implements RequestHandler {
             String cookie = String.format("sid=%s;", UUID.randomUUID());
             httpResponse.addStatus(HttpStatus.FOUND);
             httpResponse.addCookie(cookie);
-            httpResponse.addLocation("/index.html");
+            httpResponse.addLocation("/main/index.html");
             logger.debug("로그인이 성공했습니다. {}", user);
         } else {
             httpResponse.addStatus(HttpStatus.FOUND);

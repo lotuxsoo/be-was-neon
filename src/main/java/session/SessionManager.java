@@ -16,9 +16,8 @@ public class SessionManager {
         sessions.remove(sid);
     }
 
-    public static User findUserBySessionId(String sid) {
+    public static User findUserBySid(String sid) {
         String userId = sessions.get(sid);
         return Database.findUserById(userId);
     }
-
 }

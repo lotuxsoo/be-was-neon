@@ -18,7 +18,6 @@ public class StaticFileHandler implements RequestHandler {
     public void handle(HttpRequest httpRequest, HttpResponse httpResponse) {
         File file = new File(DEFAULT_PATH + httpRequest.getPath());
         logger.debug(DEFAULT_PATH + httpRequest.getPath());
-
         if (file.exists() && !file.isDirectory()) {
             httpResponse.addStatus(HttpStatus.OK);
 
