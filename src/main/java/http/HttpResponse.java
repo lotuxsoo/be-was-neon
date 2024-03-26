@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,7 @@ public class HttpResponse {
     private byte[] body;
 
     public HttpResponse() {
-        headers = new HashMap<>();
+        headers = new LinkedHashMap<>();
         body = new byte[0];
     }
 
@@ -33,13 +34,12 @@ public class HttpResponse {
         headers.put("Content-Length", "Content-Length: " + contentLength + CRLF);
     }
 
-
     public void addLocation(String location) {
         headers.put("Location", "Location: " + location + CRLF);
     }
 
     public void addCookie(String cookie) {
-        headers.put("Cookie", "Set-Cookie: " + cookie + " Path=/" + CRLF);
+        headers.put("Cookie", "Set-Cookie: " + cookie + SP + "Path=/" + CRLF);
     }
 
     public void setBody(byte[] body) {
@@ -49,6 +49,7 @@ public class HttpResponse {
     public String getHeaders() {
         StringBuilder sb = new StringBuilder();
         headers.keySet().forEach(key -> sb.append(headers.get(key)));
+        logger.debug("Headers: " + sb.toString());
         return sb.toString();
     }
 

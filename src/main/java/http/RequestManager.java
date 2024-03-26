@@ -31,6 +31,8 @@ public class RequestManager {
             body = readBody(contentLength);
         }
 
+        logger.debug("body: " + body);
+
         return new HttpRequest(requestLine, headers, body);
     }
 
