@@ -31,7 +31,7 @@ public class LoginHandler implements RequestHandler {
             httpResponse.addLocation("/index.html");
             logger.debug("로그인이 성공했습니다. {}", user);
         } else {
-            httpResponse.addStatus(HttpStatus.NOT_FOUND);
+            httpResponse.addStatus(HttpStatus.FOUND);
             httpResponse.addLocation("/login/failed.html");
             logger.debug("로그인에 실패했습니다.");
         }
