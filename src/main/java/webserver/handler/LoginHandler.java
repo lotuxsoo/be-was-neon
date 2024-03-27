@@ -24,17 +24,17 @@ public class LoginHandler implements RequestHandler {
         if (user == null) {
             httpResponse.setStatus(HttpStatus.FOUND);
             httpResponse.setLocation("/index.html");
-            logger.debug("해당하는 User를 찾지 못했습니다.");
+            logger.debug("[로그인] 해당하는 유저가 db에 없습니다.");
         } else if (user.getUserId().equals(userId) && user.getPassword().equals(password)) {
             String cookie = String.format("sid=%s;", UUID.randomUUID());
             httpResponse.setStatus(HttpStatus.FOUND);
             httpResponse.setCookie(cookie);
             httpResponse.setLocation("/main/index.html");
-            logger.debug("로그인이 성공했습니다. {}", user);
+            logger.debug("[로그인] 로그인이 성공했습니다. {}", user);
         } else {
             httpResponse.setStatus(HttpStatus.FOUND);
             httpResponse.setLocation("/login/failed.html");
-            logger.debug("로그인에 실패했습니다.");
+            logger.debug("[로그인] 로그인에 실패했습니다.");
         }
     }
 }

@@ -18,7 +18,7 @@ public class CreateHandler implements RequestHandler {
         User user = User.makeUser(paramMap);
         Database.addUser(user); // db에 유저 생성
 
-        logger.debug("새로운 유저가 생성되었습니다. {}", user);
+        logger.debug("[회원가입] 새로운 유저가 생성되었습니다. {}", user);
 
         httpResponse.setStatus(HttpStatus.FOUND);
         httpResponse.setLocation("/index.html");
