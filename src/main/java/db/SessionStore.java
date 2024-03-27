@@ -1,11 +1,10 @@
-package session;
+package db;
 
-import db.Database;
 import java.util.HashMap;
 import java.util.Map;
 import model.User;
 
-public class SessionManager {
+public class SessionStore {
     private static final Map<String, String> sessions = new HashMap<>();
 
     public static void addSession(String sid, String userId) {
