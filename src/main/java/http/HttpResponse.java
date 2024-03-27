@@ -13,8 +13,7 @@ public class HttpResponse {
     private final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
     private static final String CRLF = "\r\n";
     private static final String SP = " ";
-    private static final String HTTP_VERSION = "HTTP/1.1 ";
-    private Map<String, String> headers;
+    private final Map<String, String> headers;
     private byte[] body;
 
     public HttpResponse() {
@@ -23,7 +22,7 @@ public class HttpResponse {
     }
 
     public void setStatus(HttpStatus status) {
-        headers.put("Start-Line", HTTP_VERSION + status.getCode() + SP + status.getMessage() + CRLF);
+        headers.put("Start-Line", "HTTP/1.1 " + status.getCode() + SP + status.getMessage() + CRLF);
     }
 
     public void setContentType(String contentType) {
@@ -49,7 +48,7 @@ public class HttpResponse {
     public String getHeaders() {
         StringBuilder sb = new StringBuilder();
         headers.keySet().forEach(key -> sb.append(headers.get(key)));
-        logger.debug("Headers: " + sb.toString());
+        logger.debug("응답 헤더: {}", sb);
         return sb.toString();
     }
 

@@ -21,7 +21,7 @@ public class RequestManager {
 
     public HttpRequest readRequest() throws IOException {
         String requestLine = br.readLine();
-        logger.debug(requestLine);
+        logger.debug("요청 라인: {}", requestLine);
 
         Map<String, String> headers = readHeaders();
 
@@ -30,20 +30,21 @@ public class RequestManager {
             int contentLength = Integer.parseInt(headers.get("Content-Length"));
             body = readBody(contentLength);
         }
-
-        logger.debug("body: " + body);
+        logger.debug("요청 바디: {}", body);
 
         return new HttpRequest(requestLine, headers, body);
     }
 
     private Map<String, String> readHeaders() throws IOException {
         Map<String, String> headers = new HashMap<String, String>();
+
         String line;
         while ((line = br.readLine()) != null && !line.isEmpty()) {
             String[] split = line.split(": ");
             headers.put(split[0], split[1]);
         }
 
+        logger.debug("요청 헤더: ");
         for (String key : headers.keySet()) {
             logger.debug(key + " " + headers.get(key));
         }
@@ -61,6 +62,6 @@ public class RequestManager {
             sb.append((char) br.read());
         }
 
-        return URLDecoder.decode(sb.toString(), "UTF-8");
+        return URLDecoder.decode(sb.toString(), StandardCharsets.UTF_8);
     }
 }
