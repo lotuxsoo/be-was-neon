@@ -19,21 +19,21 @@ public class StaticFileHandler implements RequestHandler {
         File file = new File(DEFAULT_PATH + httpRequest.getPath());
         logger.debug(DEFAULT_PATH + httpRequest.getPath());
         if (file.exists() && !file.isDirectory()) {
-            httpResponse.addStatus(HttpStatus.OK);
+            httpResponse.setStatus(HttpStatus.OK);
 
             String ext = httpRequest.getPath().split("\\.")[1];
             for (ContentType type : ContentType.values()) {
                 if (type.getName().equals(ext)) {
                     String contentType = type.getContentType();
-                    httpResponse.addContentType(contentType);
+                    httpResponse.setContentType(contentType);
                 }
             }
 
             byte[] body = readFileContent(file);
             httpResponse.setBody(body);
-            httpResponse.addContentLength(body.length);
+            httpResponse.setContentLength(body.length);
         } else {
-            httpResponse.addStatus(HttpStatus.NOT_FOUND);
+            httpResponse.setStatus(HttpStatus.NOT_FOUND);
         }
     }
 

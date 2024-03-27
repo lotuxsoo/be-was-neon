@@ -22,23 +22,23 @@ public class HttpResponse {
         body = new byte[0];
     }
 
-    public void addStatus(HttpStatus status) {
+    public void setStatus(HttpStatus status) {
         headers.put("Start-Line", HTTP_VERSION + status.getCode() + SP + status.getMessage() + CRLF);
     }
 
-    public void addContentType(String contentType) {
+    public void setContentType(String contentType) {
         headers.put("Content-Type", "Content-Type: " + contentType + CRLF);
     }
 
-    public void addContentLength(int contentLength) {
+    public void setContentLength(int contentLength) {
         headers.put("Content-Length", "Content-Length: " + contentLength + CRLF);
     }
 
-    public void addLocation(String location) {
+    public void setLocation(String location) {
         headers.put("Location", "Location: " + location + CRLF);
     }
 
-    public void addCookie(String cookie) {
+    public void setCookie(String cookie) {
         headers.put("Cookie", "Set-Cookie: " + cookie + SP + "Path=/" + CRLF);
     }
 
