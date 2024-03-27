@@ -1,4 +1,4 @@
-package http;
+package webserver.http;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ public class HttpRequest {
     /*
      * 쿼리 스트링을 Map 형태로 변환해서 리턴하는 함수
      * */
-    public Map<String, String> getParamMap() {
+    public Map<String, String> getQueryMap() {
         String[] params = body.split("&");
         for (String param : params) {
             String[] split = param.split("=");

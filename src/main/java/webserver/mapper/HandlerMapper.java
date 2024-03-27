@@ -1,6 +1,6 @@
-package webserver;
+package webserver.mapper;
 
-import http.HttpRequest;
+import webserver.http.HttpRequest;
 import java.util.HashMap;
 import java.util.Map;
 import webserver.handler.CreateHandler;

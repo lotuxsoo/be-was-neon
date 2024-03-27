@@ -1,8 +1,7 @@
 package webserver;
 
-import http.HttpRequest;
-import http.HttpResponse;
-import http.RequestManager;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,6 +9,8 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.handler.RequestHandler;
+import webserver.manager.RequestManager;
+import webserver.mapper.HandlerMapper;
 
 public class MainHandler implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(MainHandler.class);
@@ -24,10 +25,9 @@ public class MainHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
-            RequestManager manager = new RequestManager(in);
+            RequestManager manager = new RequestManager(in); // HTTP 요청을 읽어서 필요한 형태로 값을 파싱하는 객체
+            HttpRequest httpRequest = manager.readRequest(); // RequestManager가 HttpRequest 객체를 생성
 
-            HttpRequest httpRequest = manager.readRequest();
             HttpResponse httpResponse = new HttpResponse();
 
             HandlerMapper handlerMapper = new HandlerMapper();
