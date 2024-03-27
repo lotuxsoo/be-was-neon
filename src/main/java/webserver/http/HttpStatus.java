@@ -1,4 +1,4 @@
-package http;
+package webserver.http;
 
 public enum HttpStatus {
     OK(200, "OK"), NOT_FOUND(404, "Not Found"), FOUND(302, "Found");

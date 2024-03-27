@@ -1,9 +1,9 @@
 package webserver.handler;
 
-import http.ContentType;
-import http.HttpRequest;
-import http.HttpResponse;
-import http.HttpStatus;
+import webserver.http.ContentType;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
+import webserver.http.HttpStatus;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
