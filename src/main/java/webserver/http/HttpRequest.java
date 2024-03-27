@@ -26,9 +26,7 @@ public class HttpRequest {
         return path;
     }
 
-    /*
-     * 쿼리 스트링을 Map 형태로 변환해서 리턴하는 함수
-     * */
+    // 쿼리 스트링을 Map으로 변환해서 리턴하는 함수
     public Map<String, String> getQueryMap() {
         String[] params = body.split("&");
         for (String param : params) {

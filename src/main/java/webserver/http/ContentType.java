@@ -9,8 +9,8 @@ public enum ContentType {
     JPG("jpeg", "image/jpeg"),
     SVG("svg", "image/svg+xml");
 
-    private String name;
-    private String contentType;
+    private final String name;
+    private final String contentType;
 
     ContentType(String name, String contentType) {
         this.name = name;
