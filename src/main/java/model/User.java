@@ -19,7 +19,6 @@ public class User {
     public static User makeUser(Map<String, String> paramMap) {
         User user = new User(paramMap.get("userId"), paramMap.get("password"), paramMap.get("name"),
                 paramMap.get("email"));
-        Database.addUser(user);
         return user;
     }
 

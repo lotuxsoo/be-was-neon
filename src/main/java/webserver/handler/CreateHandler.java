@@ -1,5 +1,6 @@
 package webserver.handler;
 
+import db.Database;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
@@ -15,9 +16,11 @@ public class CreateHandler implements RequestHandler {
     public void handle(HttpRequest httpRequest, HttpResponse httpResponse) {
         Map<String, String> paramMap = httpRequest.getParamMap();
         User user = User.makeUser(paramMap);
-        logger.debug("신규 유저가 생성되었습니다. {}", user);
+        Database.addUser(user); // db에 유저 생성
 
-        httpResponse.addStatus(HttpStatus.FOUND);
-        httpResponse.addLocation("/index.html");
+        logger.debug("새로운 유저가 생성되었습니다. {}", user);
+
+        httpResponse.setStatus(HttpStatus.FOUND);
+        httpResponse.setLocation("/index.html");
     }
 }

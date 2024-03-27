@@ -18,21 +18,22 @@ public class LoginHandler implements RequestHandler {
         Map<String, String> paramMap = httpRequest.getParamMap();
         String userId = paramMap.get("userId");
         String password = paramMap.get("password");
-        User user = Database.findUserById(userId);
+
+        User user = Database.findUserById(userId); // db에서 유저 찾아옴
 
         if (user == null) {
-            httpResponse.addStatus(HttpStatus.FOUND);
-            httpResponse.addLocation("/index.html");
+            httpResponse.setStatus(HttpStatus.FOUND);
+            httpResponse.setLocation("/index.html");
             logger.debug("해당하는 User를 찾지 못했습니다.");
         } else if (user.getUserId().equals(userId) && user.getPassword().equals(password)) {
             String cookie = String.format("sid=%s;", UUID.randomUUID());
-            httpResponse.addStatus(HttpStatus.FOUND);
-            httpResponse.addCookie(cookie);
-            httpResponse.addLocation("/main/index.html");
+            httpResponse.setStatus(HttpStatus.FOUND);
+            httpResponse.setCookie(cookie);
+            httpResponse.setLocation("/main/index.html");
             logger.debug("로그인이 성공했습니다. {}", user);
         } else {
-            httpResponse.addStatus(HttpStatus.FOUND);
-            httpResponse.addLocation("/login/failed.html");
+            httpResponse.setStatus(HttpStatus.FOUND);
+            httpResponse.setLocation("/login/failed.html");
             logger.debug("로그인에 실패했습니다.");
         }
     }
